@@ -29,13 +29,18 @@ public class Bullet : MonoBehaviour
         transform.position += transform.right * speed * Time.deltaTime; // Mueve la bala hacia adelante
 
         timer -= Time.deltaTime; // Decrementa el temporizador
-        if (timer <= 0f)
-        {
-            Release(); // Libera la bala al pool si el tiempo de vida se ha agotado
-        }
+        if (timer <= 0f) Release(); // Libera la bala al pool si el tiempo de vida se ha agotado
     }
 
-
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Solo dañamos objetos que sean enemigos y tengan vida
+        if (other.GetComponent<Enemy>() != null && other.TryGetComponent(out Health health))
+        {
+            health.TakeDamage(damage);
+            Release();
+        }
+    }
 
     public void Release()
     {
